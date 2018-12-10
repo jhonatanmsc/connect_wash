@@ -8,6 +8,8 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
+from utils.usuarios import perfils
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, nome, password=None):
@@ -15,7 +17,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Usuarios devem ter cpfs validos!')
 
         user = self.model(
-            cpf_cnpj=self.normalize_email(email),
+            email=self.normalize_email(email),
             nome=nome,
         )
 
@@ -25,18 +27,19 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, nome, password):
         user = self.create_user(
-            email,
+            email=email,
             password=password,
             nome=nome,
         )
         user.is_admin = True
         user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
 
 class Perfil(models.Model):
-    tipo = models.CharField('cargo', max_length=100)
+    descr = models.CharField(max_length=20, choices=perfils, verbose_name="tipo perfil")
     permissoes = models.ManyToManyField(
         Permission,
         verbose_name='Permissões',
@@ -48,7 +51,7 @@ class Perfil(models.Model):
         verbose_name_plural = 'Perfis'
 
     def __str__(self):
-        return self.cargo
+        return self.descr
 
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
@@ -57,10 +60,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(u'email', max_length=255, null=True, unique=True)
     telefone = models.CharField('numero de telefone', max_length=30, null=True, blank=True)
     data_nasc = models.DateField(null=True, blank=True)
-    adress = models.ForeignKey(Endereco, models.DO_NOTHING, null=True, blank=True)
+    endereco = models.ForeignKey(Endereco, models.DO_NOTHING, null=True, blank=True)
     perfil = models.ForeignKey(u'Perfil', models.DO_NOTHING,related_name='usuario', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -76,12 +80,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         super(Usuario, self).save()
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
 
     @property
     def first_name(self):

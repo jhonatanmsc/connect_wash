@@ -1,7 +1,8 @@
 from django.db import models
 
 from django.db import models
-from utils.localidade import *
+
+from utils.localidades import UFs
 
 
 class Endereco(models.Model):
