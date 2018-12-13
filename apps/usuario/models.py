@@ -38,22 +38,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class Perfil(models.Model):
-    descr = models.CharField(max_length=20, choices=perfils, verbose_name="tipo perfil")
-    permissoes = models.ManyToManyField(
-        Permission,
-        verbose_name='Permissões',
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = 'Perfil'
-        verbose_name_plural = 'Perfis'
-
-    def __str__(self):
-        return self.descr
-
-
 class Usuario(AbstractBaseUser, PermissionsMixin):
     cpf_cnpj = models.CharField(u'cpf/cnpj', max_length=19, unique=True)
     nome = models.CharField(u'nome', max_length=100)
@@ -61,7 +45,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     telefone = models.CharField('numero de telefone', max_length=30, null=True, blank=True)
     data_nasc = models.DateField(null=True, blank=True)
     endereco = models.ForeignKey(Endereco, models.DO_NOTHING, null=True, blank=True)
-    perfil = models.ForeignKey(u'Perfil', models.DO_NOTHING,related_name='usuario', null=True, blank=True)
+    perfil = models.CharField(max_length=20, choices=perfils, verbose_name="tipo perfil")
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
