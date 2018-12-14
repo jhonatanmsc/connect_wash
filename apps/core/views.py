@@ -4,7 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, CreateView, DeleteView
 
 from apps.core.forms import SolicitacaoForm
 from apps.core.models import Solicitacao
@@ -64,3 +64,14 @@ class SolicitacaoCreate(SuccessMessageMixin, CreateView):
         for erro in form.errors:
             messages.add_message(self.request, messages.ERROR, erro)
         return redirect(self.name)
+
+
+class SolicitacaoDelete(SuccessMessageMixin, DeleteView):
+    name = 'solicitacao-delete'
+    model = Solicitacao
+    success_message = 'Solicitação deletada'
+    success_url = reverse_lazy('home')
+
+    def get_success_message(self, cleaned_data):
+        messages.success(self.request, self.success_message)
+        return self.success_url

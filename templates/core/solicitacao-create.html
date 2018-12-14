@@ -9,13 +9,14 @@
 			<label for="{{form.qtd.name}}" class="control-form">{{form.qtd.label}}</label>
 			{{form.qtd}}
 			<label for="{{form.lavanderia.name}}" class="control-form">{{form.lavanderia.label}}</label>
-			<select name="{{form.lavanderia.name}}" id="{{form.lavanderia.id_for_label}}" class="js-example-basic-single">
+			<select name="{{form.lavanderia.name}}" id="{{form.lavanderia.id_for_label}}" class="js-example-basic-single" style="width: 100px;">
+				<option value="">Nenhum</option>
 				{% for lav in lavanderias %}
 				<option value="{{ lav.id }}">{{lav}}</option>
 				{% endfor %}
 			</select>
-			<a href="{% url 'home' %}" style="margin-right: 20px;">Cancelar</a>
-			<input type="submit" class="btn btn-success" value="Criar">
+			<!-- <a href="{% url 'home' %}" style="margin-right: 20px;">Cancelar</a> -->
+			<input type="submit" class="btn btn-success" value="Criar" style="margin-top: 20px;">
 		</form>
 	</div>
 </div>
@@ -39,6 +40,16 @@
 {% endif %}
 {% endblock %}
 
-{% block js %}{% endblock %}
+{% block js %}
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script>
+$(document).ready(function() {
+	console.log("lole");
+    $('.js-example-basic-single').select2();
+});	
+</script>
+{% endblock %}
 
-{% block css %}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}

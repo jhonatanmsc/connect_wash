@@ -2,29 +2,29 @@
 
 <ul class="sidebar navbar-nav">
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{% url 'home' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
           </a>
     </li>
-    {% if user.perfil == 'lavadora' %}
+    {% if user.perfil == 'LAVANDERIA' %}
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'solicitacao-list' %}">
-                <i class="fas fa-fw fa-chart-area"></i>
+            <a class="nav-link" href="{% url 'solicitacao-create' %}">
+                <i class="fas fa-paste"></i>
                 <span>Ver solicitações</span>
             </a>
         </li>
     {% else %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'solicitacao-create' %}">
-                <i class="fas fa-fw fa-chart-area"></i>
+                <i class="fas fa-file-alt"></i>
                 <span>Criar solicitação</span>
             </a>
         </li>
     {% endif %}
     <li class="nav-item">
         <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-user-edit"></i>
             <span>meus dados</span>
         </a>
     </li>
