@@ -12,6 +12,9 @@
 			<select name="{{form.lavanderia.name}}" id="{{form.lavanderia.id_for_label}}" class="js-example-basic-single" style="width: 100px;">
 				<option value="">Nenhum</option>
 				{% for lav in lavanderias %}
+				{% if lav.nome == form.instance.lavanderia.nome %}
+				<option value="{{ lav.id }}" selected>{{lav}}</option>
+				{% endif %}
 				<option value="{{ lav.id }}">{{lav}}</option>
 				{% endfor %}
 			</select>
@@ -44,7 +47,6 @@
 <script src="{% static 'js/select2.min.js' %}"></script>
 <script>
 $(document).ready(function() {
-	console.log("lole");
     $('.js-example-basic-single').select2();
 });	
 </script>

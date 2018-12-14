@@ -36,9 +36,9 @@
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ solicitacao.id }}" style="margin-left: 10px; width: 50px;">
                             <i class="fas fa-trash-alt"></i>
                         </button>
-                        <button type="button" class="btn btn-primary" style="width: 50px;">
+                        <a class="btn btn-primary" style="width: 50px;" href="{% url 'solicitacao-update' solicitacao.id %}">
                             <i class="fas fa-edit"></i>
-                        </button>
+                        </a>
                         <form action="{% url 'solicitacao-delete' solicitacao.pk %}" method="post">{% csrf_token %}
                             <div class="modal fade" id="deleteModal{{ solicitacao.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">

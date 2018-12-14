@@ -4,7 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView, DeleteView
+from django.views.generic import TemplateView, ListView, CreateView, DeleteView, UpdateView
 
 from apps.core.forms import SolicitacaoForm
 from apps.core.models import Solicitacao
@@ -75,3 +75,41 @@ class SolicitacaoDelete(SuccessMessageMixin, DeleteView):
     def get_success_message(self, cleaned_data):
         messages.success(self.request, self.success_message)
         return self.success_url
+
+
+class SolicitacaoUpdate(SuccessMessageMixin, UpdateView):
+    name = 'solicitacao-update'
+    template_name = 'core/solicitacao-create.html'
+    model = Solicitacao
+    success_message = 'Solicitação alterada.'
+    form_class = SolicitacaoForm
+
+    def get_context_data(self, **kwargs):
+        context = super(SolicitacaoUpdate, self).get_context_data(**kwargs)
+        context['lavanderias'] = Usuario.objects.filter(perfil='LAVANDERIA')
+        context['status'] = [stts[0] for stts in STATUS]
+        return context
+
+    def form_valid(self, form):
+        try:
+            z_solicitacao = form.save(commit=False)
+            z_cliente = self.request.user
+            z_lavanderia = form.cleaned_data['lavanderia']
+            z_qtd = int(form.cleaned_data['qtd'])
+            z_status = 'ABERTO'
+            z_solicitacao.cliente = z_cliente
+            z_solicitacao.lavanderia = z_lavanderia
+            z_solicitacao.qtd = z_qtd
+            z_solicitacao.status = z_status
+            z_solicitacao.save()
+            messages.success(self.request, self.success_message)
+            return redirect('home')
+
+        except Exception as e:
+            messages.error(self.request, e)
+            return redirect(self.name)
+
+    def form_invalid(self, form):
+        for erro in form.errors:
+            messages.add_message(self.request, messages.ERROR, erro)
+        return redirect(self.name)
