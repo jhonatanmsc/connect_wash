@@ -39,8 +39,8 @@ class CustomUserManager(BaseUserManager):
 
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    cpf_cnpj = models.CharField(u'cpf/cnpj', max_length=19, unique=True)
-    nome = models.CharField(u'nome', max_length=100)
+    cpf_cnpj = models.CharField(u'cpf/cnpj', max_length=19, null=True, blank=True)
+    nome = models.CharField(u'nome', max_length=100, null=True, blank=True)
     email = models.EmailField(u'email', max_length=255, null=True, unique=True)
     telefone = models.CharField('numero de telefone', max_length=30, null=True, blank=True)
     data_nasc = models.DateField(null=True, blank=True)

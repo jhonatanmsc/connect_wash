@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin - create</title>
+
+    <!-- Bootstrap core CSS-->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin.css' %}" rel="stylesheet">
+
+  </head>
+
+  <body class="bg-dark">
+
+    <div class="container">
+      <div class="card card-login mx-auto mt-5">
+        <div class="card-header">Criar usuario</div>
+        <div class="card-body">
+          <form method="POST"> {% csrf_token %}
+
+              <label for="{{form.email.name}}" class="form-control" id="{{form.email.id_for_label}}">{{ form.email.label }}</label>
+              {{form.email}}
+
+              <label for="{{form.nome.name}}" class="form-control" id="{{form.nome.id_for_label}}">{{form.nome.label}}</label>
+              {{form.nome}}
+
+              <label for="{{form.perfil.name}}" class="form-control" id="{{form.perfil.id_for_label}}">{{form.perfil.label}}</label>
+              {{form.perfil}}
+
+              <label for="{{form.logradouro.name}}" class="form-control" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
+              {{form.logradouro}}
+
+              <label for="cidade" class="form-control" id="id_cidade">cidade</label>
+              <select name="cidade" id="id_select_cidade" class="js-example-basic-single" style="width: 100px;">
+                <option value="">Nenhuma</option>
+                {% for cidade in cidades %}
+                {% if cidade.nome == form.instance.cidade.nome %}
+                <option value="{{ cidade.id }}" selected>{{cidade}}</option>
+                {% endif %}
+                <option value="{{ cidade.id }}">{{cidade}}</option>
+                {% endfor %}
+              </select>
+  
+              <label for="bairro" class="form-control" id="id_bairro">bairro</label>
+              <select name="bairro" id="id_select_bairro" class="js-example-basic-single" style="width: 100px;">
+                <option value="">Nenhum</option>
+                {% for bairro in bairros %}
+                {% if bairro.nome == form.instance.bairro.nome %}
+                <option value="{{ bairro.id }}" selected>{{bairro}}</option>
+                {% endif %}
+                <option value="{{ bairro.id }}">{{bairro}}</option>
+                {% endfor %}
+              </select>
+
+              <label for="{{form.logradouro.name}}" class="form-control" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
+              {% if form.instance.id %}
+              <input type="text" maxlength="30" class="form-control" value="{{form.instance.endereco.logradouro}}">
+              {% else %}
+              {{form.logradouro}}
+              {% endif %}
+
+            <button class="btn btn-primary btn-block" type="submit">{% if form.instance.id %}Editar{% else %}Criar{% endif %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  </body>
+
+</html>

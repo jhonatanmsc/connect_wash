@@ -7,7 +7,11 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
+                    {% if user.perfil == 'CLIENTE' %}
                     <th>lavanderia</th>
+                    {% else %}
+                    <th>cliente</th>
+                    {% endif %}
                     <th>status</th>
                     <th>qtd</th>
                     <th>valor</th>
@@ -16,22 +20,31 @@
             </thead>
             <tbody>
                 {% for solicitacao in solicitacoes %}
+                {% if user.perfil == 'LAVANDERIA' and not solicitacao.lavanderia %}
                 <tr>
-                    {% if solicitacao.lavanderia %}
-                    <td>{{ solicitacao.lavanderia }}</td>
+                    {% if solicitacao.cliente %}
+                    <td>{{ solicitacao.cliente }}</td>
                     {% else %}
                     <td>Nenhum</td>
                     {% endif %}
                     <td>{{ solicitacao.status }}</td>
                     <td>{{ solicitacao.qtd }}</td>
                     <td>{{ solicitacao.valor }}</td>
-                    {% if user.perfil == 'LAVANDERIA' %}
                     <td>
                         <button type="button" class="btn btn-success" style="width: 50px;">
                             <i class="fas fa-clipboard-check"></i>
                         </button>
                     </td>
+                {% elif solicitacao.cliente == user %}
+                <tr>
+                    {% if solicitacao.lavanderia %}
+                        <td>{{ solicitacao.lavanderia }}</td>
                     {% else %}
+                        <td>Nenhum</td>
+                    {% endif %}
+                    <td>{{ solicitacao.status }}</td>
+                    <td>{{ solicitacao.qtd }}</td>
+                    <td>{{ solicitacao.valor }}</td>
                     <td>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ solicitacao.id }}" style="margin-left: 10px; width: 50px;">
                             <i class="fas fa-trash-alt"></i>
@@ -55,8 +68,8 @@
                             </div>
                         </form>
                     </td>
-                    {% endif %}
                 </tr>
+                {% endif %}
                 {% empty %}
                 <tr>
                     <td>- - -</td>
