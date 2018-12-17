@@ -1,3 +1,6 @@
+import pdb
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
@@ -18,14 +21,19 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        context['solicitacoes'] = Solicitacao.objects.all()
+        context['solicitacoes'] = Solicitacao.objects.all().order_by('status')
         return context
 
 
 class SolicitacaoList(ListView):
     name = 'solicitacao-list'
-    template_name = 'solicitacao-list.html'
+    template_name = 'core/solicitacao-list.html'
     model = Solicitacao
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(SolicitacaoList, self).get_context_data(**kwargs)
+        context['solicitacoes'] = Solicitacao.objects.filter(lavanderia=self.request.user)
+        return context
 
 
 class SolicitacaoCreate(SuccessMessageMixin, CreateView):
@@ -90,16 +98,26 @@ class SolicitacaoUpdate(SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         try:
             z_solicitacao = form.save(commit=False)
-            z_cliente = self.request.user
-            z_lavanderia = form.cleaned_data['lavanderia']
-            z_qtd = int(form.cleaned_data['qtd'])
-            z_status = 'ABERTO'
-            z_solicitacao.cliente = z_cliente
-            z_solicitacao.lavanderia = z_lavanderia
-            z_solicitacao.qtd = z_qtd
-            z_solicitacao.status = z_status
-            z_solicitacao.save()
-            messages.success(self.request, self.success_message)
+            if self.request.user.perfil == 'CLIENTE':
+                z_cliente = self.request.user
+                z_lavanderia = form.cleaned_data['lavanderia']
+                z_qtd = int(form.cleaned_data['qtd'])
+                z_status = 'ABERTO'
+                z_solicitacao.cliente = z_cliente
+                z_solicitacao.lavanderia = z_lavanderia
+                z_solicitacao.qtd = z_qtd
+                z_solicitacao.status = z_status
+                z_solicitacao.save()
+                messages.success(self.request, self.success_message)
+            else:
+                z_solicitacao = Solicitacao.objects.get(id=z_solicitacao.id)
+                z_lavanderia = self.request.user
+                z_valor = form.cleaned_data['valor']
+                z_status = 'PENDENTE'
+                z_solicitacao.lavanderia = z_lavanderia
+                z_solicitacao.valor = z_valor
+                z_solicitacao.status = z_status
+                z_solicitacao.save()
             return redirect('home')
 
         except Exception as e:
@@ -107,6 +125,33 @@ class SolicitacaoUpdate(SuccessMessageMixin, UpdateView):
             return redirect(self.name)
 
     def form_invalid(self, form):
+        # pdb.set_trace()
         for erro in form.errors:
             messages.add_message(self.request, messages.ERROR, erro)
         return redirect(self.name)
+
+
+class SolicitacaoCancel(SuccessMessageMixin, TemplateView):
+    name = 'solicitacao-cancel'
+    success_message = 'Solicitacao cancelada'
+
+    def post(self, request, pk):
+        z_solicitacao = Solicitacao.objects.get(id=pk)
+        z_solicitacao.lavanderia = None
+        z_solicitacao.status = 'ABERTO'
+        z_solicitacao.valor = '0,00'
+        z_solicitacao.save()
+        messages.success(request, self.success_message)
+        return redirect('solicitacao-list')
+
+
+class SolicitacaoAccept(SuccessMessageMixin, TemplateView):
+    name = 'solicitacao-accept'
+    success_message = 'Solicitacao aceita'
+
+    def post(self, request, pk):
+        z_solicitacao = Solicitacao.objects.get(id=pk)
+        z_solicitacao.status = 'ATENDIDO'
+        z_solicitacao.save()
+        messages.success(request, self.success_message)
+        return redirect('solicitacao-list')

@@ -4,6 +4,7 @@
 {% block content %}
 <div class="row" style="padding: 0px 40px;">
 	<div class="col-md-6">
+		{% if user.perfil == 'CLIENTE' %}
 		<h3>{% if form.instance.id %}Editar{% else %}Criar{% endif %} solicitação para lavagem</h3>
 		<form method="POST" style="width: 20%; margin-bottom: 10px;">{% csrf_token %}
 			<label for="{{form.qtd.name}}" class="control-form">{{form.qtd.label}}</label>
@@ -21,6 +22,20 @@
 			<!-- <a href="{% url 'home' %}" style="margin-right: 20px;">Cancelar</a> -->
 			<input type="submit" class="btn btn-success" value="Criar" style="margin-top: 20px;">
 		</form>
+		{% else %}
+		<h3>Informe o valor que pretende cobrar</h3>
+		<form method="POST" style="width: 20%; margin-bottom: 10px;">{% csrf_token %}
+			
+			<label for="valor" id="id_label_valor">valor</label>
+			{% if form.instance.id %}
+			<input type="text" class="form-control" id="id_valor" name="valor" style="text-align: right" value="{{form.instance.valor}}">
+			{% else %}
+			<input type="text" class="form-control" id="id_valor" name="valor" style="text-align: right">
+			{% endif %}
+			<!-- <a href="{% url 'home' %}" style="margin-right: 20px;">Cancelar</a> -->
+			<input type="submit" class="btn btn-success" value="Aceitar" style="margin-top: 20px;">
+		</form>
+		{% endif %}
 	</div>
 </div>
 {% if messages %}
@@ -45,9 +60,12 @@
 
 {% block js %}
 <script src="{% static 'js/select2.min.js' %}"></script>
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
 <script>
 $(document).ready(function() {
     $('.js-example-basic-single').select2();
+
+    $('#id_valor').mask('0.000,00', {reverse:true});
 });	
 </script>
 {% endblock %}

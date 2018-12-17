@@ -4,12 +4,12 @@
     <li class="nav-item active">
         <a class="nav-link" href="{% url 'home' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+            <span>Dashboard - {{user.nome}}</span>
           </a>
     </li>
     {% if user.perfil == 'LAVANDERIA' %}
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'solicitacao-create' %}">
+            <a class="nav-link" href="{% url 'solicitacao-list' %}">
                 <i class="fas fa-paste"></i>
                 <span>Ver solicitações</span>
             </a>

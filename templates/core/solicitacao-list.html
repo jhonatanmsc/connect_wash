@@ -1,0 +1,86 @@
+{% extends 'components/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row" style="padding: 0px 40px;">
+    <h3>Solicitações atendidas por mim</h3>
+    <!-- DataTables Example -->
+    <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>cliente</th>
+                    <th>status</th>
+                    <th>qtd</th>
+                    <th>valor</th>
+                    <th>ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitacao in solicitacoes %}
+                <tr>
+                    <td>{{ solicitacao.cliente }}</td>
+                    <td>{{ solicitacao.status }}</td>
+                    <td>{{ solicitacao.qtd }}</td>
+                    <td>{{ solicitacao.valor }}</td>
+                    <td>
+                        <a class="btn btn-success" style="width: 50px;" href="{% url 'solicitacao-update' solicitacao.id %}">
+                            <i class="fas fa-clipboard-check"></i>
+                        </a>
+                        <button class="btn btn-danger" style="width: 50px;" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-body">
+                                <h3>Deseja realmente cancelar?</h3>
+                              </div>
+                              <div class="modal-footer">
+                                <form method="post" action="{% url 'solicitacao-cancel' solicitacao.id %}"> {% csrf_token %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">fechar</button>
+                                    <button type="submit" class="btn btn-danger">cancelar solicitacao</button>
+                                </form>
+                                {% if messages %}
+                                    {% for msg in messages %}
+                                        <div id="snackbar">{{ msg }}</div>
+                                        <script>
+                                            (function myFunction() {
+                                                // Get the snackbar DIV
+                                                var x = document.getElementById("snackbar");
+
+                                                // Add the "show" class to DIV
+                                                x.className = "show";
+
+                                                // After 3 seconds, remove the show class from DIV
+                                                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                                            })();
+                                        </script>
+                                    {% endfor %}
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>- - -</td>
+                    <td>- - -</td>
+                    <td>- - -</td>
+                    <td>- - -</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/select2.min.js' %}"></script>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom-toast.css' %}">
+{% endblock %}
