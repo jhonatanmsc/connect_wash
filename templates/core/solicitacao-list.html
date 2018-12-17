@@ -23,12 +23,15 @@
                     <td>{{ solicitacao.qtd }}</td>
                     <td>{{ solicitacao.valor }}</td>
                     <td>
-                        <a class="btn btn-success" style="width: 50px;" href="{% url 'solicitacao-update' solicitacao.id %}">
-                            <i class="fas fa-clipboard-check"></i>
-                        </a>
+                        {% if solicitacao.status == 'ATENDIDO' %}
+                        <button class="btn btn-danger" style="width: 50px;" data-toggle="modal" data-target="#exampleModal" disabled>
+                            <i class="fas fa-times"></i>
+                        </button>
+                        {% else %}
                         <button class="btn btn-danger" style="width: 50px;" data-toggle="modal" data-target="#exampleModal">
                             <i class="fas fa-times"></i>
                         </button>
+                        {% endif %}
                         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">

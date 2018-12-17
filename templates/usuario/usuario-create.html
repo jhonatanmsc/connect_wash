@@ -25,55 +25,61 @@
 
   <body class="bg-dark">
 
-    <div class="container">
-      <div class="card card-login mx-auto mt-5">
+    <div class="container" style="margin-bottom: 40px;">
+      <div class="card card-login mx-auto mt-5" style="margin: auto !important; margin-top: 40px !important; min-width: 80%;">
         <div class="card-header">Criar usuario</div>
         <div class="card-body">
-          <form method="POST"> {% csrf_token %}
+          <form method="POST" class="row" style="padding: 20px;"> {% csrf_token %}
 
-              <label for="{{form.email.name}}" class="form-control" id="{{form.email.id_for_label}}">{{ form.email.label }}</label>
-              {{form.email}}
+              <div class="col-md-5" style="padding: 0; margin-right: 40px;">
+                <label for="{{form.email.name}}" id="{{form.email.id_for_label}}" >{{ form.email.label }}</label>
+                  {{form.email}}
 
-              <label for="{{form.nome.name}}" class="form-control" id="{{form.nome.id_for_label}}">{{form.nome.label}}</label>
-              {{form.nome}}
+                  <label for="{{form.nome.name}}" id="{{form.nome.id_for_label}}" style="margin-top: 20px;">{{form.nome.label}}</label>
+                  {{form.nome}}
 
-              <label for="{{form.perfil.name}}" class="form-control" id="{{form.perfil.id_for_label}}">{{form.perfil.label}}</label>
-              {{form.perfil}}
+                  <label for="{{form.perfil.name}}" id="{{form.perfil.id_for_label}}" style="margin-top: 20px;">{{form.perfil.label}}</label>
+                  {{form.perfil}}
 
-              <label for="{{form.logradouro.name}}" class="form-control" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
-              {{form.logradouro}}
+                  <label for="{{form.password.name}}" id="{{form.password.id_for_label}}" style="margin-top: 20px;">Senha</label>
+                  {{form.password}}
+              </div>
 
-              <label for="cidade" class="form-control" id="id_cidade">cidade</label>
-              <select name="cidade" id="id_select_cidade" class="js-example-basic-single" style="width: 100px;">
-                <option value="">Nenhuma</option>
-                {% for cidade in cidades %}
-                {% if cidade.nome == form.instance.cidade.nome %}
-                <option value="{{ cidade.id }}" selected>{{cidade}}</option>
-                {% endif %}
-                <option value="{{ cidade.id }}">{{cidade}}</option>
-                {% endfor %}
-              </select>
-  
-              <label for="bairro" class="form-control" id="id_bairro">bairro</label>
-              <select name="bairro" id="id_select_bairro" class="js-example-basic-single" style="width: 100px;">
-                <option value="">Nenhum</option>
-                {% for bairro in bairros %}
-                {% if bairro.nome == form.instance.bairro.nome %}
-                <option value="{{ bairro.id }}" selected>{{bairro}}</option>
-                {% endif %}
-                <option value="{{ bairro.id }}">{{bairro}}</option>
-                {% endfor %}
-              </select>
+              <div class="col-md-5" style="padding: 0;">
+                <label for="{{form.logradouro.name}}" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
+                {{form.logradouro}}
 
-              <label for="{{form.logradouro.name}}" class="form-control" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
-              {% if form.instance.id %}
-              <input type="text" maxlength="30" class="form-control" value="{{form.instance.endereco.logradouro}}">
-              {% else %}
-              {{form.logradouro}}
-              {% endif %}
-
-            <button class="btn btn-primary btn-block" type="submit">{% if form.instance.id %}Editar{% else %}Criar{% endif %}</button>
+                <div class="row" style="margin: 20px 0;">
+                  <div class="col-md-6" style="padding: 0;padding-right: 10px">
+                    <label for="cidade" id="id_cidade">cidade</label>
+                    <select name="cidade" id="id_select_cidade" class="js-example-basic-single form-control" style="width: 100%;">
+                      <option value="">Nenhuma</option>
+                      {% for cidade in cidades %}
+                      {% if cidade.nome == form.instance.cidade.nome %}
+                      <option value="{{ cidade.id }}" selected>{{cidade}}</option>
+                      {% endif %}
+                      <option value="{{ cidade.id }}">{{cidade}}</option>
+                      {% endfor %}
+                    </select>  
+                  </div>
+                  
+                  <div class="col-md-6" style="padding: 0">
+                    <label for="bairro" id="id_bairro">bairro</label>
+                    <select name="bairro" id="id_select_bairro" class="js-example-basic-single form-control" style="width: 100%;">
+                      <option value="">Nenhum</option>
+                      {% for bairro in bairros %}
+                      {% if bairro.nome == form.instance.bairro.nome %}
+                      <option value="{{ bairro.id }}" selected>{{bairro}}</option>
+                      {% endif %}
+                      <option value="{{ bairro.id }}">{{bairro}}</option>
+                      {% endfor %}
+                    </select>  
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-block" type="submit" style="margin-top: 20px;margin-left: auto; margin-right: auto; width: 50%;">{% if form.instance.id %}Editar{% else %}Criar{% endif %}</button>
           </form>
+              
         </div>
       </div>
     </div>

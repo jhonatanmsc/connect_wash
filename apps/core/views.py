@@ -109,6 +109,7 @@ class SolicitacaoUpdate(SuccessMessageMixin, UpdateView):
                 z_solicitacao.status = z_status
                 z_solicitacao.save()
                 messages.success(self.request, self.success_message)
+                return redirect('home')
             else:
                 z_solicitacao = Solicitacao.objects.get(id=z_solicitacao.id)
                 z_lavanderia = self.request.user
@@ -118,7 +119,7 @@ class SolicitacaoUpdate(SuccessMessageMixin, UpdateView):
                 z_solicitacao.valor = z_valor
                 z_solicitacao.status = z_status
                 z_solicitacao.save()
-            return redirect('home')
+                return redirect('home')
 
         except Exception as e:
             messages.error(self.request, e)
@@ -154,4 +155,19 @@ class SolicitacaoAccept(SuccessMessageMixin, TemplateView):
         z_solicitacao.status = 'ATENDIDO'
         z_solicitacao.save()
         messages.success(request, self.success_message)
-        return redirect('solicitacao-list')
+        return redirect('home')
+
+
+class SolicitacaoDenied(SuccessMessageMixin, TemplateView):
+    name = 'solicitacao-denied'
+    success_message = 'Solicitação negada'
+
+    def post(self, request, pk):
+        z_solicitacao = Solicitacao.objects.get(id=pk)
+        z_solicitacao.lavanderia = None
+        z_solicitacao.status = 'ABERTO'
+        z_solicitacao.valor = '0,00'
+        z_solicitacao.save()
+        messages.success(request, self.success_message)
+        return redirect('home')
+

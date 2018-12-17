@@ -6,7 +6,7 @@ from utils.localidades import UFs
 
 
 class Endereco(models.Model):
-    cep = models.CharField(verbose_name='CEP', max_length=9)
+    cep = models.CharField(verbose_name='CEP', max_length=9, null=True, blank=True)
     cidade = models.ForeignKey('Cidade', models.DO_NOTHING, null=True)
     bairro = models.ForeignKey('Bairro', models.DO_NOTHING, null=True)
     logradouro = models.CharField(verbose_name='Logradouro', max_length=100, null=True)
@@ -34,10 +34,13 @@ class Cidade(models.Model):
     def __str__(self):
         return '%s %s' % (self.nome, self.uf)
 
+    def get_bairros(self):
+        return self.bairros
+
 
 class Bairro(models.Model):
     nome = models.CharField(max_length=100, blank=False, null=False)
-    cidade = models.ForeignKey('Cidade', models.DO_NOTHING, blank=True, null=True)
+    cidade = models.ForeignKey('Cidade', models.DO_NOTHING, related_name='bairros', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Bairro'

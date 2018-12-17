@@ -61,6 +61,32 @@
                             </button>
                             {% endif %}
                         </form>
+
+                        {% if solicitacao.status == 'PENDENTE' %}
+                        <button class='btn btn-warning' style="margin-left: 10px; " type='submit' data-toggle="modal" data-target='#deniedModal{{ solicitacao.id }}'>
+                            <i class="far fa-times-circle"></i>
+                        </button>
+                        {% else %}
+                        <button class='btn btn-warning' style="margin-left: 10px; " type='submit' disabled>
+                            <i class="far fa-times-circle"></i>
+                        </button>
+                        {% endif %}
+
+                        <form action="{% url 'solicitacao-denied' solicitacao.id %}" method="POST" style="display: inline-flex;">{% csrf_token %}
+                            <div class="modal fade" id="deniedModal{{ solicitacao.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <b style="font-size: 1.3em;">Deseja realmente negar proposta?</b>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Negar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ solicitacao.id }}" style="margin-left: 10px; ">
                             <i class="fas fa-trash-alt"></i>
                         </button>
