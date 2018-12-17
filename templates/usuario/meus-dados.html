@@ -1,0 +1,97 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<form method="POST"> {% csrf_token %}
+<div class="row" style="padding: 0px 40px;">
+  	<div class="col-md-5" style="padding: 0; margin-right: 40px;">
+      <label for="{{form.email.name}}" id="{{form.email.id_for_label}}" >{{ form.email.label }}</label>
+      <input type="text" class="form-control" name="{{form.email.name}}" value="{{user.email}}" disabled>
+
+      <label for="{{form.nome.name}}" id="{{form.nome.id_for_label}}" style="margin-top: 20px;">{{form.nome.label}}</label>
+      <input type="text" class="form-control" name="{{form.nome.name}}" value="{{user.nome}}">
+
+      <label for="{{form.perfil.name}}" id="{{form.perfil.id_for_label}}" style="margin-top: 20px;">{{form.perfil.label}}</label>
+      <select class="form-control" name="{{form.perfil.name}}" disabled>
+          <option value="{{user.perfil}}">{{user.perfil}}</option>
+      </select>
+
+      <label for="{{form.password.name}}" id="{{form.password.id_for_label}}" style="margin-top: 20px;">Senha</label>
+      <input type="password" class="form-control" value="{{user.password}}" name="password" disabled>
+    </div>
+
+    <div class="row col-md-5" style="">
+
+      <div class="col-md-12" style="padding: 0">
+        <label for="{{form.logradouro.name}}" id="{{form.logradouro.id_for_label}}">{{form.logradouro.label}}</label>
+        <input type="text" class="form-control" id="id_logradouro" value="{{user.endereco.logradouro}}" name="logradouro">
+      </div>
+
+      <div class="col-md-6" style="padding: 0;padding-right: 10px">
+        <label for="cidade" id="id_cidade_label">cidade</label>
+        <select name="cidade" id="id_cidade" class="js-example-basic-single form-control" style="width: 100%;" name="cidade">
+          <option value="">Nenhuma</option>
+          {% for cidade in cidades %}
+          {% if cidade == object.endereco.cidade %}
+          <option value="{{ cidade.id }}" selected>{{cidade}}</option>
+          {% else %}
+          <option value="{{ cidade.id }}">{{cidade}}</option>
+          {% endif %}
+          {% endfor %}
+        </select>  
+      </div>
+      <div class="col-md-6" style="padding: 0">
+        <label for="bairro" id="id_bairro_label">bairro</label>
+        <select name="bairro" id="id_bairro" class="js-example-basic-single form-control" style="width: 100%;" name="bairro">
+          <option value="">Nenhum</option>
+        </select>  
+      </div>
+    </div>
+    <div style="text-align: right; margin-top: 40px;" class="col-md-10">
+      <button class="btn btn-primary" type="submit" style="width: 260px;">Atualizar</button>
+    </div>
+</div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script>
+  let selected = '{{ form.instance.endereco.bairro.id }}';
+
+  function loadBairro(value, text, extra='') {
+    
+    let bairro = '';
+    if(extra == $('#{{ form.cidade.id_for_label }}').val()){
+      bairro = `
+      <option value=${ value } ${ selected == value ? 'selected' : '' }>
+      ${ text }
+      </option>`;  
+    }
+    return bairro;
+  }
+
+  function loadBairros() {
+
+    let bairroOption = `
+        {% for bairro in bairros %}
+          ${ loadBairro( '{{ bairro.id }}', '{{ bairro }}', '{{ bairro.cidade.id }}' ) }
+        {% endfor %} 
+      `;
+    return bairroOption;
+  }
+
+  function resetBairroOptions() {
+    console.log('oi');
+    $('#id_bairro').html('<option value="">Nenhum</option>');
+    $('#id_bairro').append( loadBairros() );
+  }
+  resetBairroOptions();
+
+  $('#id_cidade').change( function(){ resetBairroOptions() } );
+</script>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+{% endblock %}
